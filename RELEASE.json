@@ -1,0 +1,8 @@
+{
+  "release": "barq-devops-starter-v1.0.0",
+  "baseline_tag": "starter-v1.0.0",
+  "application_version": "1.0.0",
+  "log_fixture": "logs/application.log",
+  "log_fixture_kind": "synthetic historical training evidence",
+  "student_solution_provided": false
+}
