@@ -10,7 +10,8 @@ docs
 tests
 assessment
 evidence
-config
 database
 *.md
 *.bundle
+.assessment
+backups

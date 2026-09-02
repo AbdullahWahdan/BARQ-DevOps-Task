@@ -1,5 +1,8 @@
-# Architecture
+# Diagram notes
 
-Add your own diagram (for example, an image or Mermaid source) and a short explanation. Show the final NGINX proxy, all application instances, Docker networks, exposed ports and request flow. Keep this diagram consistent with the final submitted configuration and video.
+Create architecture.png or architecture.pdf at the repository root.
+Show the final three-instance system on port 8090.
 
-Explain how health, a failed instance and recovery affect request routing. This file deliberately contains no completed architecture diagram.
+Label client, NGINX, Flask instances, PostgreSQL, Redis, ports, frontend/backend networks,
+storage, request flow and health/readiness relationships. Explain remaining single points of failure.
+This note is not a replacement for the required diagram.

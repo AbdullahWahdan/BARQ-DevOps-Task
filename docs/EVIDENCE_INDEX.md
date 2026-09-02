@@ -1,17 +1,12 @@
-# Submission and evidence index
+# Evidence and submission index
 
-- Candidate name:
-- GitHub repository:
-- Baseline commit:
+- Repository URL:
 - Final commit:
-- CI run URL for the submitted commit:
-- Continuous video URL (8–12 minutes):
-- Final README and architecture links:
+- Matching CI run:
+- Continuous 12-18 minute video URL:
+- Challenge receipt ID:
+- Starting video commit:
+- Later documentation-only commits, if any:
 
-Map each assessment requirement to verifiable evidence. Add rows as needed.
-
-| Requirement | File/output/report reference | Commit hash | Video timestamp |
-| --- | --- | --- | --- |
-| | | | |
-
-Identify the commits created during the video and explain any later documentation-only commits so the repository and recording can be compared.
+For each requirement, link: file/output -> commit -> video timestamp.
+Match the final README, diagram, GitHub code and video (three instances, public port 8090).

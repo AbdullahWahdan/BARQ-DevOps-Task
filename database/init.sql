@@ -1,11 +1,7 @@
-CREATE TABLE IF NOT EXISTS items (
-    id integer PRIMARY KEY,
-    title text NOT NULL,
-    done boolean NOT NULL DEFAULT false
+CREATE TABLE IF NOT EXISTS records (
+    id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    title varchar(200) NOT NULL CHECK (length(trim(title)) > 0)
 );
-
-INSERT INTO items (id, title, done) VALUES
-    (1, 'Check service readiness', false),
-    (2, 'Review deployment logs', false),
-    (3, 'Document the operating procedure', false)
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO records (title) VALUES
+    ('Review service readiness'),
+    ('Document the operating procedure');

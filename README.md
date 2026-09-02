@@ -1,72 +1,97 @@
 <img src="assets/barq-logo.svg" alt="BARQ Systems" width="180">
 
-# DevOps Internship Acceptance Task — Starter Pack
+# DevOps Internship Task - Starter v2
 
-**Release:** `barq-devops-starter-v1.0.0`  
-**Starting Git tag:** `starter-v1.0.0`  
-**Due date:** __________________________
+**Due date:** ____________________
 
-Start with [the assessment](assessment/TASK.md) and [the application contract](assessment/APPLICATION.md).
-This is an intentionally broken training environment. The number and types of hidden issues are not disclosed.
-Investigate the supplied application and environment; do not substitute a different project.
+**Time window:** 4 calendar days from the invitation email date/time.
 
-## What you receive
+Read [the task](assessment/TASK.md), then [the API contract](assessment/APPLICATION.md).
+Everyone receives this same release. The environment is intentionally broken.
+Hidden issue types and count are not disclosed. Investigate this project; do not replace it.
 
-- A small Python HTTP application and application-only contract tests.
-- A Dockerfile, Docker Compose configuration and NGINX configuration.
-- A historical training incident log at `logs/application.log`, with format notes.
-- Empty documentation templates under `docs/`.
+## Included
 
-The application uses PostgreSQL for a small seeded item list. This is an isolated local lab, not a production deployment; all supplied accounts and data are synthetic and must not be reused for real services. It uses Linux containers on Linux or Docker Desktop; Windows users should use a WSL2 Linux terminal for the assessment commands. No cloud account or private registry is required.
+- Flask API, PostgreSQL, Redis, Docker and NGINX starter files.
+- Three historical logs, a question template and documentation templates.
+- App-only tests and a recorded challenge script.
+- Unimplemented validation, failure-test and backup/restore placeholders.
 
-## Prerequisites
+Use synthetic lab accounts/data only. Supplied values are for this disposable exercise,
+never for real services. Keep the lab on your local machine; do not expose it publicly.
 
-Git, Docker Engine/Desktop with the Compose plugin, a terminal, and Python 3.12 for local tests/log analysis. Allow about 2 CPU cores, 2 GB available RAM and 2 GB disk for the lab, plus Docker Desktop's own requirements. Internet is needed for initial image/package downloads and GitHub submission. Use the same supplied baseline as the other candidates.
+## Before you start
 
-## Get started
+- Linux or WSL2, Python 3.12, Git and Docker with Compose.
+- Docker Desktop must use Linux containers. Run shell scripts in Linux/WSL.
+- Suggested capacity: 2 CPU cores, 4 GB free RAM and 3 GB free disk, plus Docker overhead.
+- Internet for first downloads and GitHub. No cloud account or paid registry required.
+- Use a machine where container names app-01, app-02, nginx, postgres and redis are unused.
+  Do not delete someone else's containers to free those names.
+- Intended public port: 8080 before the video, 8090 after the live change.
+  If either is occupied, ask the organizer for a documented workstation exception.
 
-Clone the shared starter repository, or follow the Git bundle instructions supplied with the student ZIP. Keep its baseline commit and tag. Connect your working repository to your own empty GitHub repository; do not squash the starting history.
+## Start
 
-From the repository root in a Linux/WSL terminal:
+Clone the supplied Git bundle/repository. Keep both release commits and the v2 baseline tag.
+Set your own Git name/email before making changes.
+
+From the repository root:
 
 ```bash
 git status
-git log -1 --oneline
+git log -2 --oneline
 cp .env.example .env
 docker version
 docker compose version
-docker compose up --build -d
-docker compose ps -a
-docker compose logs --no-color
+docker compose -p barq-assessment up --build -d
+docker compose -p barq-assessment ps -a
+docker compose -p barq-assessment logs --no-color
 ```
 
-The initial environment is not expected to pass the acceptance criteria. Preserve the actual observations and your investigation in Git and the troubleshooting report. Startup output is evidence, not a promise that every service is ready.
+The initial environment is not expected to pass. Record what actually happens.
+The intended URL is http://127.0.0.1:8080; do not assume the starter configuration is correct.
 
-The intended entry point is `http://127.0.0.1:8088`. If that host port is occupied, select another unused `PUBLIC_PORT` in your local `.env` and document it; this is a workstation adjustment, not a diagnosis of the supplied environment. Use only the training accounts and data, never real credentials or customer data.
-
-Application-only checks, independent of Docker/NGINX:
+App-only checks use fake dependencies, not real SQL/Redis or Docker networking:
 
 ```bash
-python3 -m unittest discover -s tests -v
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests -v
 ```
 
-These tests use a fake database-query function and do **not** replace the automated environment-validation script you must write. The actual application connects to PostgreSQL using the pinned dependency in `requirements.txt`, installed during the Docker build.
+## Your work
 
-To stop only this project's containers and network, run `docker compose down` from this directory. Its SQL data volume is retained. Do not use global cleanup/prune commands on a shared machine.
+- Complete [assessment/TASK.md](assessment/TASK.md).
+- Implement validate.py, failure_test.py, backup.sh and restore.sh, or documented equivalents.
+  Placeholders deliberately exit 2; they are unfinished deliverables, not validation evidence.
+- Create .github/workflows/ci.yml yourself.
+- Complete the root report templates and docs/EVIDENCE_INDEX.md.
+- Add architecture.png or architecture.pdf.
+- Replace this README with copyable setup/build/run/test/failure/backup/restore/cleanup commands.
+- Commit as you work. Do not commit real secrets, backups, virtual environments or challenge state.
 
-## Your submission
+## Recorded challenge
 
-Implement and document the requirements in [TASK.md](assessment/TASK.md). Write your own validation script and GitHub Actions workflow; they are candidate deliverables, not supplied solutions. Complete the templates (empty templates are not evidence), add an architecture diagram, and turn this README into a complete guide for your final solution.
+Use the supplied video_challenge.sh unchanged. Read its code if needed; do not run it early.
+After repairing the environment, run it once, for the first time in the video working copy,
+during the continuous 12-18 minute recording. The script requires healthy services, both
+initial instances and the target network layout. Preflight failures make no runtime changes.
 
-Use these starting files:
+```bash
+./video_challenge.sh
+```
 
-- [Troubleshooting and log analysis](docs/TROUBLESHOOTING.md)
-- [Technical decision log](docs/DECISIONS.md)
-- [AI usage disclosure](docs/AI_USAGE.md)
-- [Architecture](docs/ARCHITECTURE.md)
-- [Evidence and submission links](docs/EVIDENCE_INDEX.md)
-- [Validation-script requirements](scripts/README.md)
+If you deliberately changed the project name, pass --project YOUR_PROJECT.
+An organizer-approved alternate local URL can be passed with --url http://127.0.0.1:PORT.
+The script touches only matching Compose-owned lab containers/networks.
+Keep the receipt in .assessment/challenge.json for the evidence index. Do not delete the
+one-run marker to retry. A local marker is not tamper-proof; ownership is judged from evidence.
+Do not use docker compose down to reset the runtime challenge.
 
-## Final README sections to complete
+## Stop safely
 
-Replace this section with your setup/start/stop commands, architecture link, validation command and output, CI run link, endpoint/load-balancing tests, failure and recovery behavior, important decisions and limitations, final commit hash, and continuous video link. Map video timestamps and report findings to the corresponding commits. Preserve the original incident log as evidence.
+Outside the recorded challenge, docker compose -p barq-assessment down stops this lab.
+Do not use --volumes during persistence tests. Avoid global Docker prune/cleanup commands.
+Back up anything you need before removing containers; investigate whether data actually persists.

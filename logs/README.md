@@ -1,9 +1,15 @@
 # Historical incident evidence
 
-`application.log` is a deterministic, synthetic training fixture, not real customer data. All candidates receive the exact same file. It represents a historical staging window on **2026-08-20, UTC**, with normalized application and edge records.
+All logs contain synthetic lab data. Do not edit the originals.
 
-Each line is an independent JSON object. `timestamp`, `level`, `service` and `event` are always present. Request records may include `request_id`, `instance_id`, `method`, `path`, `status` and `duration_ms`; edge records may additionally include an upstream and an error. Fields that do not apply to an event can be absent. There are request events and operational events: do not assume every line is one user request or count correlated edge/application records as two user requests.
+- access.log: NGINX client-facing requests, JSON lines.
+- error.log: NGINX diagnostic text.
+- application.log: structured app requests/events, JSON lines.
+- Time zone: UTC. Correlate using request_id, timestamp and upstream/instance.
+- request_time is seconds; duration_ms is milliseconds.
+- Comma-separated upstream values describe attempts for one client request.
+- A log record is not always a distinct client request. Handle duplicates and malformed lines.
+- These files describe a historical incident, not the current environment's full issue list.
 
-The file is historical evidence, not a transcript of the starting containers and not an inventory of current hidden issues. Preserve it unchanged. Generate current environment logs separately and distinguish observations, correlations and hypotheses in your report.
-
-Analyze it with tools of your choice and submit reproducible commands/scripts plus conclusions. No analysis answer or expected totals are provided in the student package.
+Complete every question in ../log_analysis.md. Include reproducible commands/scripts,
+parse exclusions, counts, a timeline and evidence. Do not manually count or invent conclusions.

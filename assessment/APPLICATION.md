@@ -1,33 +1,32 @@
 # Application contract
 
-The service is a small Python HTTP API backed by PostgreSQL. Keep this public behavior intact while implementing the DevOps solution.
+The supplied Flask API uses real PostgreSQL and Redis. Keep this behavior.
 
-## HTTP interface
+- GET /: 200, message and instance_id.
+- GET /health: 200 while the app process can respond. No dependency check.
+- GET /ready: 200 only when PostgreSQL and Redis respond; otherwise 503.
+- GET /instance: 200, distinct instance_id, also returned in X-Instance-ID.
+- POST /records: store a PostgreSQL record; JSON body {"title":"Video proof"}, return 201.
+- GET /records: list persisted records as {"records":[{"id":1,"title":"..."}], ...}.
+- GET /counter: atomically increment the shared Redis counter and return its value.
+- Every response includes a request ID. Unknown routes return 404.
+- Invalid record titles return 400. Use a non-empty string of at most 200 characters.
+- Dependency failures return 503 without replacing real SQL/Redis behavior with mock data.
 
-| Request | Expected behavior |
-| --- | --- |
-| `GET /` | HTTP 200 JSON containing `service`, `version`, `instance_id`, and `message`. |
-| `GET /api/info` | HTTP 200 JSON with the same fields plus non-negative `uptime_seconds`. |
-| `GET /health` | Runs `SELECT 1`; HTTP 200 with `status: "ok"`, `database: "ready"` and instance identity when SQL is reachable; otherwise HTTP 503. |
-| `GET /api/items` | Queries the SQL `items` table; HTTP 200 with instance identity and the seeded item list; otherwise HTTP 503. |
-| An unknown path | HTTP 404 JSON with `error: "not_found"`. |
+Example requests after repair:
 
-Responses include `X-Instance-ID` and `X-Request-ID`. The instance identity must remain visible through the proxy so a request sequence can establish which instances served it. A direct process health check alone does not establish proxy reachability or failure handling.
+```bash
+curl -i http://127.0.0.1:8080/health
+curl -i http://127.0.0.1:8080/ready
+curl -H 'Content-Type: application/json' -d '{"title":"Persistence proof"}' http://127.0.0.1:8080/records
+curl http://127.0.0.1:8080/records
+curl http://127.0.0.1:8080/counter
+curl http://127.0.0.1:8080/instance
+```
 
-## Runtime configuration
+Environment inputs: INSTANCE_ID, APP_MESSAGE, APP_HOST, APP_PORT, DATABASE_URL and REDIS_URL.
+The app listens on APP_HOST:APP_PORT. PostgreSQL initializes database/init.sql on fresh storage.
+The assessment is about deployment/operations; extend app-only tests as needed, but do not
+change endpoint semantics to bypass dependencies. These tests do not prove environment health.
 
-| Variable | Application default | Meaning |
-| --- | --- | --- |
-| `APP_HOST` | `0.0.0.0` | Listening address inside the application's runtime. |
-| `APP_PORT` | `8080` | HTTP listening port inside that runtime. |
-| `INSTANCE_ID` | `local` | Instance identity: 1–64 letters, digits, hyphens or underscores. |
-| `APP_MESSAGE` | `Welcome to BARQ Systems` | Message returned by the application. |
-| `DATABASE_URL` | None | PostgreSQL connection URI used by the application; required for SQL-backed endpoints. |
-
-Configuration is read at process startup. The table describes the application's interface, not the correctness of the supplied deployment configuration. The `database` service runs PostgreSQL on its standard internal port, 5432. `database/init.sql` creates the `items` table and synthetic starting rows when a new data volume is initialized. This app is read-only; do not replace SQL-backed endpoints with hardcoded responses.
-
-## Logs
-
-The application emits JSON Lines to standard output. Events include startup, requests, client disconnections, database errors and shutdown. Request records have a UTC timestamp, instance ID, request ID, method, path, status and duration in milliseconds. An acceptable `X-Request-ID` is preserved; otherwise one is generated. All accounts and data in this exercise are synthetic.
-
-The supplied historical log is described separately in [logs/README.md](../logs/README.md). Do not assume a historical incident and the current configuration are identical.
+The three historical logs are a separate training incident, not a complete list of current faults.

@@ -1,65 +1,109 @@
-# BARQ Systems — DevOps Internship Acceptance Task
+# DevOps Internship Task
 
-**Due date:** __________________________
+Fix, test and explain the supplied environment.
 
-You are taking over a small application that is not operating reliably. Every candidate receives this identical starter revision, instructions and historical log. The number and types of hidden issues are not disclosed. Your objective is to diagnose, restore, operate and explain the supplied environment.
+Due date: ____________________  |  4 calendar days from the invitation email date/time.
 
-## Stage 1 — Investigate
+Everyone receives the same Flask app, broken environment and three logs. Hidden issue types and count are not disclosed. Verify starter values.
 
-- Preserve the supplied baseline in your own GitHub repository. Make progressive, meaningful commits while working; do not submit only a final bulk upload or manufacture timestamps.
-- Reproduce symptoms. Analyze `logs/application.log` using Bash, Python and/or Linux tools. Provide commands/scripts, output, counts or a timeline and evidence-backed conclusions.
-- Keep a chronological troubleshooting report: symptom, hypothesis, test/command, observed result, unsuccessful attempts, root cause, fix and retest. Link findings to commits. Document failed attempts honestly; do not invent them.
+Tools: Linux/WSL, Git, Docker, Compose, NGINX, PostgreSQL, Redis, Bash/Python, GitHub Actions.
 
-## Stage 2 — Restore and operate
+## Part 1: Investigate
+- Create your GitHub repository. Keep the baseline; commit before technical changes.
+- Commit progressively: investigate -> fix -> verify. Use meaningful messages, not bulk uploads.
+- For each issue, record symptoms, hypotheses, commands, results and failed attempts.
+- Add the root cause, fix, retest evidence and commit. Claim fixes only when proven.
+- Analyze all three logs with Bash/Python/Linux tools. Keep originals unchanged.
+- Correlate access, error and app logs. Answer every log-template question.
+- Show reproducible commands, counts, a timeline and conclusions; e.g. errors by time.
 
-- Implement Docker and Docker Compose for the supplied application and SQL database. Preserve the real SQL-backed behavior in the application contract.
-- Start with two separate application instances behind NGINX, used as a reverse proxy and load balancer.
-- Configure Docker networking and service connectivity. Make instance identity visible so repeated requests prove both instances serve traffic.
-- Implement meaningful health checks and failure handling. Test application and health endpoints, stop one instance, demonstrate continued service through NGINX, then recover it and show it serving traffic again.
-- Explain timeout, retry, failure-detection and recovery choices. Report request results and any transient errors rather than hiding them.
+## Part 2: Docker, networking and NGINX
+- Use Dockerfile, docker-compose.yml, app/ and nginx/nginx.conf.
+- Run two Flask instances behind NGINX, with working PostgreSQL and Redis connections.
+- Publish only NGINX on host port 8080. Do not publish app, PostgreSQL or Redis ports.
+- Connect NGINX + apps to frontend; apps + PostgreSQL + Redis to backend.
+- Block direct NGINX access to PostgreSQL/Redis. Use service names, not container IPs.
+- Before the video, name containers app-01, app-02, nginx, postgres and redis.
+- Keep network names ending in frontend and backend. Return distinct app identities.
+- Use a named PostgreSQL volume. Configure Redis persistence where appropriate.
+- Set correct environment variables, health/readiness checks, restart policies and resource limits.
+- Use required dependencies only. Avoid root/privileged operation where practical.
+- Use health-check tools installed in the image. Explain base-image and health-check choices.
+- Keep secrets out of images, code and Compose. Ignore secret files; provide a safe .env.example.
 
-## Stage 3 — Validate and run CI
+## Required endpoints
+- /: app response. /health: process liveness. /ready: PostgreSQL + Redis readiness.
+- /instance: backend identity. /records: create/list PostgreSQL records.
+- /counter: Redis-backed counter. Use real database/cache operations.
 
-- Write one repeatable Bash/Python validation command that checks endpoints, instance distribution, one-instance failure, continued availability and recovery. Use bounded waits, clear PASS/FAIL results and a non-zero exit status when an expectation fails.
-- Build a basic GitHub Actions pipeline for pushes and pull requests that builds the image, starts the Compose environment and runs validation. Supply a run link for the submitted commit.
+## Part 3: Validation, persistence and CI
+- Write validate.sh or validate.py. Use bounded waits, PASS/FAIL and non-zero failure exits.
+- Check public access, all endpoints, both backends and PostgreSQL/Redis readiness.
+- Check network isolation and prohibited host ports.
+- Write failure_test.sh/.py: stop one backend, check availability, restore it and verify recovery.
+- Measure traffic and errors during failure. Prove the recovered backend serves requests.
+- Write backup.sh and restore.sh (or equivalents). Prove a PostgreSQL backup restores.
+- Create a record through /records. Recreate app and PostgreSQL containers, keeping the volume.
+- Prove the record survives. Document exact test, backup and restore commands.
+- Add .github/workflows/ci.yml. Run on push and pull request.
+- CI: checkout -> syntax/Compose checks -> build -> start -> wait for readiness -> validate.
+- Fail CI when validation fails. Link the run for your final commit.
+- Extra credit (optional): add and document an image/security scan.
 
-## Stage 4 — Document and preserve evidence
+## Part 4: Documentation
+- README.md: copyable setup, build, start/stop, test, failure, backup/restore and cleanup.
+- troubleshooting.md: investigation journal, including failed attempts and retests.
+- log_analysis.md: all template answers, commands, counts and correlated evidence.
+- decisions.md: at least 5 decisions, assumptions, alternatives, trade-offs and limitations.
+- security_review.md: at least 8 concrete risks/improvements in your solution.
+- Cover secrets, ports, container user, images, networks, backup, monitoring and availability.
+- Separate implemented fixes from production plans. Include persistence and logging risks.
+- AI_USAGE.md: tools, purpose, affected files and verification; or write None.
+- architecture.png/.pdf: request flow, ports, networks, storage and health relationships.
 
-- Complete the README with setup, start/stop, validation and endpoint-test commands, failure/recovery behavior and links to all evidence.
-- Provide an architecture diagram showing NGINX, instances, Docker networks, exposed ports and request flow.
-- Supply the detailed troubleshooting/log-analysis report, including failed hypotheses and the evidence that changed your next step.
-- Maintain a technical decision log with alternatives and trade-offs.
-- Disclose AI tools used, their purpose, affected work and how you verified it. State `None` if none were used. Be able to explain every submitted change.
-- Preserve genuine Git development history. Link report entries and video changes to commits. Evaluators inspect diffs, timing and progress, not commit count alone.
+## Questions - answer in your README or reports
+- What failed first? What proved the cause? Which failed attempt taught you something?
+- What patterns did the logs reveal? How did you avoid double-counting requests?
+- How do requests flow? Why these ports, networks and readiness checks?
+- Why these timeouts, retries, restart settings and resource limits?
+- When should validation fail? What does green CI prove, or not prove?
+- Which single points of failure remain? How would you fix them in production?
+- What would you improve? How did you verify AI-assisted work?
 
-## Stage 5 — Continuous 8–12 minute technical video
+## Part 5: Video demonstration - 12-18 minutes
 
-Record a readable screen and actual terminal execution with live narration. No cuts, pauses, editing, speed-up or voice replacement. Slides, screenshots and prerecorded output cannot replace the demonstration.
+Record one continuous screen video with live narration and real terminal commands.
 
-In that single recording:
-
-1. Identify your repository and starting commit; run `git status`. Start the Compose environment from stopped containers and show services. Images may be prebuilt.
-2. Test the application and health endpoints. Send repeated requests through NGINX and show both instances responding.
-3. Stop one application instance. Continue requests, demonstrate service availability and any errors, then recover it and prove it serves traffic again.
-4. Run your validation script and explain the output. Demonstrate one historical-log finding using the terminal.
-5. Make a configuration change on screen, explain it, show `git diff`, apply it and test its effect. Also add a third application instance during the recording and prove requests reach all three.
-6. Rerun validation for the changed environment. Run `git status` and `git diff` before committing. Commit the video changes on screen and show the hashes. Push those commits before submission.
+No cuts, pauses, edits, speed-up, overlays, voice replacement or prerecorded demos. Face camera is optional.
+- Show your repository, starting commit and clean git status.
+- Build/start the stopped environment; show service health. Prebuilt images are allowed.
+- Test /, /health, /ready, /records and /counter.
+- Use /instance to prove both backends serve repeated requests through NGINX.
+- Stop one backend. Show continued traffic and errors; recover it and prove it serves again.
+- Show a created record surviving app and PostgreSQL container recreation.
+- Run validation and the failure test. Demonstrate one historical-log finding.
+- Run ./video_challenge.sh once, for the first time in this video working copy.
+- Diagnose and fix its runtime fault. Do not reset it with docker compose down.
+- Change public port 8080 to 8090 live. Prove NGINX works on 8090.
+- Add a third app instance live. Prove all three respond; rerun validation.
+- Run git status and git diff. Explain changes, commit on screen and show commit hashes.
+- Push video commits. Link each change to its commit and video timestamp.
 
 ## Submit
+- GitHub repository URL, final commit hash, matching CI run and accessible video URL.
+- Include all scripts, README, diagram, reports, decision log and AI disclosure.
+- Add an evidence index: requirement -> file/output -> commit -> video timestamp.
+- Match GitHub, video and documents to the final three-instance setup on port 8090.
+- Explain any later documentation-only commits.
 
-GitHub repository URL, final commit hash, accessible video URL, CI run URL, README, diagram, troubleshooting report, decision log, AI disclosure and an evidence index mapping requirements to files/commits/video timestamps. The README and diagram must match the final three-instance state.
+## Scoring and rules
 
-## How it is assessed
-
-| Area | Points |
-| --- | ---: |
-| Troubleshooting and log analysis | 30 |
-| Git development history | 25 |
-| Recorded technical demonstration | 25 |
-| Implementation and automation | 15 |
-| Documentation and decisions | 5 |
-| **Total** | **100** |
-
-Understanding and verifiable evidence matter more than the final working state alone. Credible incomplete work can earn partial credit. GitHub, video and documentation are the main filtering evidence, and their consistency establishes ownership. AI disclosure is required; AI detection tools are not relied on.
-
-Missing/inaccessible required evidence, a missing or non-compliant video, omitted mandatory live actions, or material contradictions/fabrication that make ownership/results unverifiable are hard-fail grounds. An honestly shown failed technical attempt is scored; it is not automatically treated as an omitted action. Timing or AI use alone does not prove misconduct.
+100 points: troubleshooting 30 | Git history 25 | video 25 | implementation/automation 15 | documentation/decisions 5.
+- We score understanding and ownership through GitHub, video and documentation.
+- We review commit diffs, timing and progress, not just commit counts or working results.
+- Hard fails: missing/inaccessible evidence, non-compliant video or skipped live actions.
+- Hard fails: fabricated/unverifiable evidence or material contradictions between submissions.
+- Honest technical failures or incomplete work can earn partial credit. Show your attempts.
+- AI and external resources are allowed. Understand and verify everything you submit.
+- Disclose AI use. We do not use AI detectors; AI use or timing alone is not proof of misconduct.
+- Do not fabricate commit dates. Use synthetic lab data only; never submit real secrets.
