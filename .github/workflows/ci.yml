@@ -1,0 +1,47 @@
+name: BARQ DevOps CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-environment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate Docker Compose Configuration
+        run: docker compose config --quiet
+
+      - name: Build and Start Microservice Environment
+        run: |
+          cp .env.example .env
+          docker compose up -d --build
+
+      - name: Wait for Environment Health & Readiness
+        run: |
+          echo "Waiting for services to become healthy..."
+          timeout 60s bash -c '
+            until docker compose ps | grep -q "(healthy)"; do
+              sleep 2
+            done
+          '
+          # Additional wait to ensure all 4 containers (app-01, app-02, postgres, redis) are ready
+          sleep 5
+          docker compose ps
+
+      - name: Run Automated Validation Test Suite
+        run: python validate.py
+
+      - name: Clean Up Environment
+        if: always()
+        run: docker compose down -v
