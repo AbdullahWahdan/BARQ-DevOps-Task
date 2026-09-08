@@ -12,8 +12,8 @@
 ### 1. Setup & Environment Variables
 ```bash
 # Clone repository
-git clone https://github.com/<YOUR_USERNAME>/<YOUR_REPO>.git
-cd <YOUR_REPO>
+git clone https://github.com/AbdullahWahdan/BARQ-DevOps-Task.git
+cd BARQ-DevOps-Task
 
 # Copy environment file
 cp .env.example .env
