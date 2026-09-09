@@ -40,6 +40,8 @@ jobs:
           docker compose ps
 
       - name: Run Automated Validation Test Suite
+        env:
+          PUBLIC_PORT: "8090"
         run: python validate.py
 
       - name: Clean Up Environment

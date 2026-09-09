@@ -2,9 +2,9 @@
 
 - **Repository URL**: `https://github.com/AbdullahWahdan/BARQ-DevOps-Task`
 - **Starting video commit**: `55e8aca7c8fef3130dbed3d96de210d35a807c75`
-- **Final commit**: `[TO_BE_FILLED_AFTER_FINAL_VIDEO_COMMIT]`
+- **Final commit**: `a00aeff1da103cb717e29edcfe0d3b0397dd4c8d`
 - **Matching CI run**: `https://github.com/AbdullahWahdan/BARQ-DevOps-Task/actions`
-- **Continuous 12-18 minute video URL**: `[TO_BE_FILLED_WITH_YOUR_VIDEO_URL]`
+- **Continuous 12-18 minute video URL**: `https://drive.google.com/file/d/1gpldt7XfbreGg31gTs4msYdQYjk60At5/view?usp=sharing`
 - **Challenge receipt ID**: `00f45045c16243d5bdc69ad23a44bcea`
 - **Later documentation-only commits, if any**: None
 
@@ -20,5 +20,5 @@
 | **Part 3 PostgreSQL Backup & Restore** | `backup.sh`, `restore.sh`, `backup.ps1` | `55e8aca7c8fef3130dbed3d96de210d35a807c75` | `[12:15]` |
 | **Part 3 GitHub Actions CI/CD** | `.github/workflows/ci.yml` | `55e8aca7c8fef3130dbed3d96de210d35a807c75` | `[13:30]` |
 | **Part 5 Recorded Challenge Execution** | `./video_challenge.sh` | `00f45045c16243d5bdc69ad23a44bcea` | `[14:45]` |
-| **Part 5 Live Port Change (8080 -> 8090)** | `docker-compose.yml` (`PUBLIC_PORT=8090`) | `[LIVE_VIDEO_COMMIT]` | `[16:00]` |
-| **Part 5 Live Scaling (app-03)** | `docker-compose.yml` (`app-03` addition) | `[LIVE_VIDEO_COMMIT]` | `[17:15]` |
+| **Part 5 Live Port Change (8080 -> 8090)** | `docker-compose.yml` (`PUBLIC_PORT=8090`) | `a00aeff1da103cb717e29edcfe0d3b0397dd4c8d` | `[16:00]` |
+| **Part 5 Live Scaling (app-03)** | `docker-compose.yml` (`app-03` addition) | `a00aeff1da103cb717e29edcfe0d3b0397dd4c8d` | `[17:15]` |
