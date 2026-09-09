@@ -14,7 +14,7 @@ except ImportError:
     import urllib2 as urllib_request
     import urllib2 as urllib_error
 
-PUBLIC_PORT = os.getenv("PUBLIC_PORT", "8080")
+PUBLIC_PORT = os.getenv("PUBLIC_PORT", "8090")
 BASE_URL = os.getenv("BASE_URL", "http://localhost:{}".format(PUBLIC_PORT))
 
 def log_result(test_name, success, details=""):
